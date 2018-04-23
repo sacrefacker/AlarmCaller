@@ -1,4 +1,24 @@
 <resources>
     <string name="app_name">AlarmCaller</string>
     <string name="action_settings">Settings</string>
+    <string name="button_set_alarm">Set alarm</string>
+    <string name="button_remove_alarm">Remove alarm</string>
+    <string name="label_call_allowed">You can call the number by clicking on the button</string>
+    <string name="label_enter_phone_number">Enter a phone number</string>
+    <string name="label_permission_denied">Permission Call Phone denied</string>
+    <string name="button_chose_time">Chose time</string>
+    <string name="label_chosen_time">Chose time..</string>
+    <string name="label_alarm_set">The alarm for number %1$s is set</string>
+    <string name="label_alarm_canceled">The alarm with a call to %1$s is canceled</string>
+
+    <string name="label_choose_time">Время звонка: \n%1$s</string>
+    <string name="format_time_booking">%1$te.%1$tm.%1$tY %1$TR</string>
+    <string name="btn_booking_time_urgently">Сейчас</string>
+    <string name="btn_save_date">Сохранить</string>
+    <string name="title_choose_date_dialog">Задать дату</string>
+    <string name="btn_save_time">Сохранить</string>
+    <string name="btn_choose_date">Выбрать дату</string>
+    <string name="title_choose_time_dialog">Задать время</string>
+
+    <string name="default_phone_number" translatable="false">+79111491389</string>
 </resources>

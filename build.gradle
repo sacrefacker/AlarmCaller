@@ -1,14 +1,15 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.KOTLIN_VERSION = '1.2.30'
+
     repositories {
         google()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,6 +21,22 @@ allprojects {
         google()
         jcenter()
     }
+}
+
+// Controlling Android properties of all your modules from the main project
+// @link http://tools.android.com/tech-docs/new-build-system/tips
+ext {
+    compileSdkVersion = 27
+    buildToolsVersion = '27.0.3'
+    minSdkVersion = 16
+    targetSdkVersion = 25
+
+    // Shared Dependencies
+    ANDROID_ANNOTATIONS_VERSION = '4.4.0'
+    ANDROID_SUPPORT_VERSION = '27.1.0'
+    IMMUTABLES_VERSION = '2.5.6'
+    DAGGER_VERSION = '2.15'
+    MOXY_VERSION = '1.5.3'
 }
 
 task clean(type: Delete) {

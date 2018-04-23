@@ -25,10 +25,41 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:design:27.1.1'
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
+
+    // Android Annotations
+    final ANDROID_ANNOTATIONS_VERSION = rootProject.ext.ANDROID_ANNOTATIONS_VERSION
+    annotationProcessor "org.androidannotations:androidannotations:$ANDROID_ANNOTATIONS_VERSION"
+    implementation "org.androidannotations:androidannotations-api:$ANDROID_ANNOTATIONS_VERSION"
+
+    // Android Support
+    // "compile" instead of "implementation" to allow proper compilation of app module
+    final ANDROID_SUPPORT_VERSION = rootProject.ext.ANDROID_SUPPORT_VERSION
+    api "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
+    api "com.android.support:design:$ANDROID_SUPPORT_VERSION"
+
+    // Immutables
+    final IMMUTABLES_VERSION = rootProject.ext.IMMUTABLES_VERSION
+    annotationProcessor "org.immutables:value:$IMMUTABLES_VERSION"
+    compileOnly "org.immutables:value:$IMMUTABLES_VERSION:annotations"
+    compileOnly"org.immutables:serial:$IMMUTABLES_VERSION"
+
+    // Dagger
+    final DAGGER_VERSION = rootProject.ext.DAGGER_VERSION
+    annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    implementation "com.google.dagger:dagger:$DAGGER_VERSION"
+
+    // Moxy
+    final MOXY_VERSION = rootProject.ext.MOXY_VERSION
+    annotationProcessor "com.arello-mobile:moxy-compiler:$MOXY_VERSION"
+    implementation "com.arello-mobile:moxy:$MOXY_VERSION"
+    implementation "com.arello-mobile:moxy-android:$MOXY_VERSION"
+    implementation "com.arello-mobile:moxy-app-compat:$MOXY_VERSION"
+
+    implementation 'com.avast:android-styled-dialogs:2.3.3'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
