@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.EActivity;
@@ -15,17 +16,20 @@ import org.androidannotations.annotations.OptionsMenu;
 @OptionsMenu(R.menu.menu_main)
 public class MainActivity extends AppCompatActivity
 {
+// MARK: - Public methods
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setSupportActionBar(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (!PermissionTools.checkPermission(MainActivity.this, Manifest.permission.CALL_PHONE)) {
+        if (!PermissionUtils.checkPermission(MainActivity.this, Manifest.permission.CALL_PHONE)) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MAKE_CALL_PERMISSION_REQUEST_CODE);
         }
     }
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity
                 }
         }
     }
+
+// MARK: - Constants
 
     private static final int MAKE_CALL_PERMISSION_REQUEST_CODE = 1;
 }

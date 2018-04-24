@@ -1,15 +1,9 @@
 package com.maloshpal.alarmcaller;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,12 +51,14 @@ public class MainFragment extends Fragment implements IDateDialogListener
         String phoneNumber = mNumberText.getText().toString();
 
         if (!TextUtils.isEmpty(phoneNumber)) {
-            if (PermissionTools.checkPermission(getActivity(), Manifest.permission.CALL_PHONE)) {
+            if (PermissionUtils.checkPermission(getActivity(), Manifest.permission.CALL_PHONE)) {
                 String dial = "tel:" + phoneNumber;
-                savePhoneNumber(dial);
-                PendingIntent pendingIntent = makePendingIntent(dial, 0);
-                setAlarm(pendingIntent);
-                Toast.makeText(getContext(), getString(R.string.label_alarm_set, phoneNumber), Toast.LENGTH_LONG).show();
+                AlarmUtils.savePhoneNumber(getContext(), dial);
+                PendingIntent pendingIntent = AlarmUtils.makePendingIntent(getContext(), dial, 0);
+                AlarmUtils.setAlarm(getContext(), mAlarmDate.getTime(), pendingIntent);
+
+                String toast = getString(R.string.label_alarm_set, phoneNumber, mAlarmDate);
+                Toast.makeText(getContext(), toast, Toast.LENGTH_LONG).show();
             }
             else {
                 Toast.makeText(getContext(), R.string.label_permission_denied, Toast.LENGTH_SHORT).show();
@@ -75,11 +71,7 @@ public class MainFragment extends Fragment implements IDateDialogListener
 
     @Click(R.id.button_remove_alarm)
     public void onRemoveAlarmClick() {
-        String phoneNumber = retrievePhoneNumber();
-        PendingIntent pendingIntent = makePendingIntent(phoneNumber, 0);
-        pendingIntent.cancel();
-        getAlarmManager().cancel(pendingIntent);
-        Toast.makeText(getContext(), getString(R.string.label_alarm_canceled, phoneNumber), Toast.LENGTH_LONG).show();
+        AlarmUtils.removeAlarm(getContext());
     }
 
     @Click(R.id.button_chose_time)
@@ -119,32 +111,6 @@ public class MainFragment extends Fragment implements IDateDialogListener
 
 // MARK: - Private methods
 
-    private AlarmManager getAlarmManager() {
-        return (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-    }
-
-    private PendingIntent makePendingIntent(String phoneNumber, int flags) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(phoneNumber));
-        return PendingIntent.getActivity(getContext(), CALL_PHONE_REQUEST_CODE, intent, flags);
-    }
-
-    private void setAlarm(PendingIntent pendingIntent) {
-        AlarmManager alarmManager = getAlarmManager();
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, mAlarmDate.getTime(), pendingIntent);
-    }
-
-    private void savePhoneNumber(String phoneNumber) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(PREFS_PHONE_NUMBER, phoneNumber);
-        editor.apply();
-    }
-
-    private String retrievePhoneNumber() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return sharedPreferences.getString(PREFS_PHONE_NUMBER, "");
-    }
-
     private void showDateChooser(Date date) {
         DatePickerDialogFragment.createBuilder(getContext(), getFragmentManager())
                 .setDate(date)
@@ -168,9 +134,6 @@ public class MainFragment extends Fragment implements IDateDialogListener
     }
 
 // MARK: - Constants
-
-    private static final int CALL_PHONE_REQUEST_CODE = 123;
-    private static final String PREFS_PHONE_NUMBER = "PREFS_PHONE_NUMBER";
 
     private static final int ALARM_DATE_REQUEST_CODE = 21;
     private static final int ALARM_TIME_REQUEST_CODE = 22;

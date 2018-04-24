@@ -8,7 +8,7 @@
     <string name="label_permission_denied">Permission Call Phone denied</string>
     <string name="button_chose_time">Chose time</string>
     <string name="label_chosen_time">Chose time..</string>
-    <string name="label_alarm_set">The alarm for number %1$s is set</string>
+    <string name="label_alarm_set">The alarm for number %1$s is set at %2$tR</string>
     <string name="label_alarm_canceled">The alarm with a call to %1$s is canceled</string>
 
     <string name="label_choose_time">Время звонка: \n%1$s</string>
@@ -21,4 +21,7 @@
     <string name="title_choose_time_dialog">Задать время</string>
 
     <string name="default_phone_number" translatable="false">+79111491389</string>
+    <!--<string name="default_phone_number" translatable="false">+79112394989</string>-->
+    <string name="default_timezone" translatable="false">+3</string>
+    <string name="sms_command_regex" translatable="false">([01]?[0-9]|2[0-3]):[0-5][0-9]</string>
 </resources>
