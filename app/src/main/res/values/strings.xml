@@ -1,27 +1,33 @@
 <resources>
     <string name="app_name">AlarmCaller</string>
+
     <string name="action_settings">Settings</string>
+    <string name="label_choose_phone_number">Choose phone number</string>
+    <string name="button_choose_time">Choose time</string>
+    <string name="button_time_chosen">Time: %1$tF %1$tR</string>
     <string name="button_set_alarm">Set alarm</string>
     <string name="button_remove_alarm">Remove alarm</string>
-    <string name="label_call_allowed">You can call the number by clicking on the button</string>
-    <string name="label_enter_phone_number">Enter a phone number</string>
-    <string name="label_permission_denied">Permission Call Phone denied</string>
-    <string name="button_chose_time">Chose time</string>
-    <string name="label_chosen_time">Chose time..</string>
-    <string name="label_alarm_set">The alarm for number %1$s is set at %2$tR</string>
-    <string name="label_alarm_canceled">The alarm with a call to %1$s is canceled</string>
 
-    <string name="label_choose_time">Время звонка: \n%1$s</string>
-    <string name="format_time_booking">%1$te.%1$tm.%1$tY %1$TR</string>
-    <string name="btn_booking_time_urgently">Сейчас</string>
-    <string name="btn_save_date">Сохранить</string>
     <string name="title_choose_date_dialog">Задать дату</string>
-    <string name="btn_save_time">Сохранить</string>
-    <string name="btn_choose_date">Выбрать дату</string>
+    <string name="button_save_date">Сохранить</string>
+    <string name="button_cancel">Отмена</string>
     <string name="title_choose_time_dialog">Задать время</string>
+    <string name="button_save_time">Сохранить</string>
+    <string name="button_choose_date">Выбрать дату</string>
 
-    <string name="default_phone_number" translatable="false">+79111491389</string>
-    <!--<string name="default_phone_number" translatable="false">+79112394989</string>-->
+    <string name="message_call_allowed">You can call the number by clicking on the button</string>
+    <string name="message_enter_phone_number">Enter a phone number</string>
+    <string name="message_permission_denied">Permission Call Phone denied</string>
+    <string name="message_alarm_set">The alarm for number %1$s is set at %2$tR</string>
+    <string name="message_alarm_canceled">The alarm with a call to %1$s is canceled</string>
+
     <string name="default_timezone" translatable="false">+3</string>
-    <string name="sms_command_regex" translatable="false">([01]?[0-9]|2[0-3]):[0-5][0-9]</string>
+    <string name="sms_command_regex" translatable="false">([01][0-9]|2[0-3]):[0-5][0-9]</string>
+
+    <string-array name="allowed_phone_numbers">
+        <item>+79111491389</item>
+        <item>+79112394989</item>
+    </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
+
 </resources>

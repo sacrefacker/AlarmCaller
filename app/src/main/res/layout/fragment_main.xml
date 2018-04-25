@@ -4,43 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     android:id="@+id/fragment_main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainFragment"
     tools:showIn="@layout/activity_main"
+
+    android:padding="40dp"
+    android:gravity="start"
     >
 
-    <EditText
-        android:id="@+id/edit_number"
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/TextAppearance.AppCompat.Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="@string/default_phone_number"
+        android:text="@string/label_choose_phone_number"
         />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <Spinner
+        android:id="@+id/selector_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="20dp"
+        android:minHeight="48dp"
+        />
 
-        <TextView
-            android:id="@+id/label_chosen_time"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="@string/label_chosen_time"
-            />
-
-        <Button
-            android:id="@+id/button_chose_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_chose_time"
-            />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/button_chose_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/button_choose_time"
+        />
 
     <Button
         android:id="@+id/button_set_alarm"
@@ -48,7 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/button_set_alarm"
-        android:layout_gravity="center"
         />
 
     <Button
@@ -57,7 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/button_remove_alarm"
-        android:layout_gravity="center"
         />
 
 </LinearLayout>

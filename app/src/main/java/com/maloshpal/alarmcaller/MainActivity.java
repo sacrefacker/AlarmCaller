@@ -2,11 +2,9 @@ package com.maloshpal.alarmcaller;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.EActivity;
@@ -17,13 +15,6 @@ import org.androidannotations.annotations.OptionsMenu;
 public class MainActivity extends AppCompatActivity
 {
 // MARK: - Public methods
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
 
     @Override
     protected void onStart() {
@@ -41,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case MAKE_CALL_PERMISSION_REQUEST_CODE :
                 if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Toast.makeText(MainActivity.this, R.string.label_call_allowed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.message_call_allowed, Toast.LENGTH_SHORT).show();
                 }
         }
     }

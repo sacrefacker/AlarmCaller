@@ -1,13 +1,15 @@
 package com.maloshpal.alarmcaller;
 
 import android.Manifest;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.app.PendingIntent;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.DatePickerDialogFragment;
@@ -19,7 +21,6 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -32,51 +33,81 @@ public class MainFragment extends Fragment implements IDateDialogListener
     public void onStart() {
         super.onStart();
 
-        mAlarmDate = new Date();
-        showPickupTime(new Timestamp(mAlarmDate.getTime()));
+        mChoseTimeButton.setText(getDefaultChoseTimeButtonText());
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.allowed_phone_numbers,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mNumberSpinner.setAdapter(adapter);
+        mNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+              @Override
+              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                  mCurrentPhoneNumber = (CharSequence) parent.getItemAtPosition(position);
+                  String phoneNumber = mCurrentPhoneNumber.toString();
+                  long alarmTime = StorageUtils.loadAlarm(getContext(), phoneNumber);
+                  if (alarmTime < System.currentTimeMillis()) {
+                      StorageUtils.removeAlarm(getContext(), phoneNumber);
+                      mAlarmDate = null;
+                      showAlarmTime(null);
+                  }
+                  else {
+                      mAlarmDate = DateUtils.isTimeEmpty(alarmTime) ? DateUtils.EMPTY_DATE : new Date(alarmTime);
+                      showAlarmTime(mAlarmDate);
+                  }
+              }
+
+              @Override
+              public void onNothingSelected(AdapterView<?> parent) {
+                  mCurrentPhoneNumber = "";
+                  mAlarmDate = null;
+                  showAlarmTime(null);
+              }
+          });
     }
 
-    public void showPickupTime(@Nullable Timestamp timestamp) {
-        String orderTime = timestamp == null ?
-                getString(R.string.btn_booking_time_urgently) :
-                getString(R.string.format_time_booking, timestamp);
-
-        mChosenTimeText.setText(getString(R.string.label_choose_time, orderTime));
+    public void showAlarmTime(@Nullable Date date) {
+        mChoseTimeButton.setText(
+                DateUtils.isDateEmpty(date) ?
+                        getDefaultChoseTimeButtonText() :
+                        getString(R.string.button_time_chosen, date));
     }
 
 // MARK: - Actions
 
     @Click(R.id.button_set_alarm)
     public void onSetAlarmClick() {
-        String phoneNumber = mNumberText.getText().toString();
-
+        String phoneNumber = mCurrentPhoneNumber.toString();
         if (!TextUtils.isEmpty(phoneNumber)) {
             if (PermissionUtils.checkPermission(getActivity(), Manifest.permission.CALL_PHONE)) {
-                String dial = "tel:" + phoneNumber;
-                AlarmUtils.savePhoneNumber(getContext(), dial);
-                PendingIntent pendingIntent = AlarmUtils.makePendingIntent(getContext(), dial, 0);
-                AlarmUtils.setAlarm(getContext(), mAlarmDate.getTime(), pendingIntent);
-
-                String toast = getString(R.string.label_alarm_set, phoneNumber, mAlarmDate);
-                Toast.makeText(getContext(), toast, Toast.LENGTH_LONG).show();
+                StorageUtils.saveAlarm(getContext(), phoneNumber, mAlarmDate.getTime());
+                AlarmUtils.setAlarm(getContext(), phoneNumber, mAlarmDate.getTime());
             }
             else {
-                Toast.makeText(getContext(), R.string.label_permission_denied, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.message_permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
         else {
-            Toast.makeText(getContext(), R.string.label_enter_phone_number, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.message_enter_phone_number, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Click(R.id.button_remove_alarm)
     public void onRemoveAlarmClick() {
-        AlarmUtils.removeAlarm(getContext());
+        Context context = getContext();
+        String phoneNumber = mCurrentPhoneNumber.toString();
+        StorageUtils.removeAlarm(context, phoneNumber);
+        AlarmUtils.removeAlarm(context, phoneNumber);
+        mAlarmDate = null;
+        showAlarmTime(null);
     }
 
     @Click(R.id.button_chose_time)
     public void onChoseTimeClick() {
-        showDateChooser(mAlarmDate);
+        showDateChooser();
     }
 
     @Override
@@ -88,7 +119,7 @@ public class MainFragment extends Fragment implements IDateDialogListener
             }
             case ALARM_TIME_REQUEST_CODE: {
                 mAlarmDate = date;
-                showPickupTime(new Timestamp(date.getTime()));
+                showAlarmTime(mAlarmDate);
                 break;
             }
         }
@@ -98,12 +129,11 @@ public class MainFragment extends Fragment implements IDateDialogListener
     public void onNegativeButtonClicked(int requestCode, Date date) {
         switch (requestCode) {
             case ALARM_DATE_REQUEST_CODE: {
-                mAlarmDate = new Date();
-                showPickupTime(null);
+                // do nothing
                 break;
             }
             case ALARM_TIME_REQUEST_CODE: {
-                showDateChooser(mAlarmDate);
+                showDateChooser();
                 break;
             }
         }
@@ -111,11 +141,14 @@ public class MainFragment extends Fragment implements IDateDialogListener
 
 // MARK: - Private methods
 
-    private void showDateChooser(Date date) {
+    private String getDefaultChoseTimeButtonText() {
+        return getString(R.string.button_choose_time);
+    }
+
+    private void showDateChooser() {
         DatePickerDialogFragment.createBuilder(getContext(), getFragmentManager())
-                .setDate(date)
-                .setPositiveButtonText(R.string.btn_save_date)
-                .setNegativeButtonText(R.string.btn_booking_time_urgently)
+                .setPositiveButtonText(R.string.button_save_date)
+                .setNegativeButtonText(R.string.button_cancel)
                 .setTimeZone(TimeZone.getDefault().getID())
                 .setTitle(R.string.title_choose_date_dialog)
                 .setTargetFragment(MainFragment.this, ALARM_DATE_REQUEST_CODE)
@@ -124,12 +157,12 @@ public class MainFragment extends Fragment implements IDateDialogListener
 
     private void showTimeChooser(Date date) {
         TimePickerDialogFragment.createBuilder(getContext(), getFragmentManager())
-                .set24hour(true)
-                .setPositiveButtonText(R.string.btn_save_time)
-                .setNegativeButtonText(R.string.btn_choose_date)
-                .setTitle(R.string.title_choose_time_dialog)
                 .setDate(date)
+                .setPositiveButtonText(R.string.button_save_time)
+                .setNegativeButtonText(R.string.button_choose_date)
+                .setTitle(R.string.title_choose_time_dialog)
                 .setTargetFragment(MainFragment.this, ALARM_TIME_REQUEST_CODE)
+                .set24hour(true)
                 .show();
     }
 
@@ -141,13 +174,13 @@ public class MainFragment extends Fragment implements IDateDialogListener
 // MARK: - Variables
 
     @InstanceState
+    CharSequence mCurrentPhoneNumber;
+
+    @InstanceState
     Date mAlarmDate;
 
-    @ViewById(R.id.edit_number)
-    EditText mNumberText;
-
-    @ViewById(R.id.label_chosen_time)
-    TextView mChosenTimeText;
+    @ViewById(R.id.selector_number)
+    Spinner mNumberSpinner;
 
     @ViewById(R.id.button_chose_time)
     Button mChoseTimeButton;

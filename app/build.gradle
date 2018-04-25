@@ -44,7 +44,7 @@ dependencies {
     final IMMUTABLES_VERSION = rootProject.ext.IMMUTABLES_VERSION
     annotationProcessor "org.immutables:value:$IMMUTABLES_VERSION"
     compileOnly "org.immutables:value:$IMMUTABLES_VERSION:annotations"
-    compileOnly"org.immutables:serial:$IMMUTABLES_VERSION"
+    compileOnly "org.immutables:serial:$IMMUTABLES_VERSION"
 
     // Dagger
     final DAGGER_VERSION = rootProject.ext.DAGGER_VERSION

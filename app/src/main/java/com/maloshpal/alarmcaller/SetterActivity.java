@@ -1,15 +1,12 @@
 package com.maloshpal.alarmcaller;
 
 import android.Manifest;
-import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.EActivity;
-
-import java.util.Date;
 
 @EActivity(R.layout.activity_alarm)
 public class SetterActivity extends AppCompatActivity
@@ -28,24 +25,28 @@ public class SetterActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "inside onStart");
 
         Bundle options = getIntent().getExtras();
         String phoneNumber = options.getString(EXTRA_PHONE_NUMBER);
         long time = options.getLong(EXTRA_TIME);
 
         if (PermissionUtils.checkPermission(SetterActivity.this, Manifest.permission.CALL_PHONE)) {
-            String dial = "tel:" + phoneNumber;
-            AlarmUtils.savePhoneNumber(SetterActivity.this, dial);
-            PendingIntent pendingIntent = AlarmUtils.makePendingIntent(SetterActivity.this, dial, 0);
-            AlarmUtils.setAlarm(SetterActivity.this, time, pendingIntent);
-
-            String toast = SetterActivity.this.getString(R.string.label_alarm_set, phoneNumber, new Date(time));
-            Toast.makeText(SetterActivity.this, toast, Toast.LENGTH_LONG).show();
+            StorageUtils.saveAlarm(SetterActivity.this, phoneNumber, time);
+            AlarmUtils.setAlarm(SetterActivity.this, phoneNumber, time);
         }
         else {
-            Toast.makeText(SetterActivity.this, R.string.label_permission_denied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(SetterActivity.this, R.string.message_permission_denied, Toast.LENGTH_SHORT).show();
         }
+
+        goToMainScreen();
+    }
+
+// MARK: - Private methods
+
+    private void goToMainScreen() {
+        Intent alarmIntent = new Intent(SetterActivity.this, MainActivity_.class);
+        startActivity(alarmIntent);
+        finish();
     }
 
 // MARK: - Constants
