@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -16,7 +17,13 @@ public class AlarmUtils
     public static void setAlarm(Context context, String phoneNumber, long time) {
         PendingIntent pendingIntent = makePendingIntent(context, phoneNumber, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        getAlarmManager(context).setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        long cleanTime = DateUtils.clearSeconds(time);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getAlarmManager(context).setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cleanTime, pendingIntent);
+        }
+        else {
+            getAlarmManager(context).setExact(AlarmManager.RTC_WAKEUP, cleanTime, pendingIntent);
+        }
 
         String toast = context.getString(R.string.message_alarm_set, phoneNumber, new Date(time));
         Toast.makeText(context, toast, Toast.LENGTH_LONG).show();

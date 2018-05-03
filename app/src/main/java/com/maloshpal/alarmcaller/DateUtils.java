@@ -7,6 +7,14 @@ import java.util.Date;
 
 public class DateUtils
 {
+    public static long clearSeconds(long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date(time));
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime().getTime();
+    }
+
     public static boolean isTimeEmpty(long time) {
         return time < 0;
     }
